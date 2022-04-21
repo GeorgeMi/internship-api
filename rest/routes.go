@@ -34,5 +34,13 @@ func (r *Service) buildRoutes() *restful.WebService {
 				_ = response.WriteErrorString(http.StatusOK, "internship-api is up and running!")
 			}))
 
+	ws.Route(ws.GET("/fibonacci").
+		Param(restful.QueryParameter("index", "pozitie").DataType("int").Required(true)).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), GetFibonacciResponse{}).
+		Returns(http.StatusBadRequest, http.StatusText(http.StatusBadRequest), EndpointErrorResponse{}).
+		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), EndpointErrorResponse{}).
+		To(r.GetFibonacciRequest).
+		Writes(map[string]string{}))
+
 	return ws
 }
