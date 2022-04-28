@@ -80,7 +80,7 @@ func validateGetFibonacciRequest(requestQuery GetFibonacciRequest) error {
 		return fmt.Errorf("Invalid Index: %v", *requestQuery.Index)
 	}
 
-	if *requestQuery.Index < 1 {
+	if *requestQuery.Index < 0 {
 
 		return fmt.Errorf("Invalid Index: %v", requestQuery.Index)
 	}
