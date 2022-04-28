@@ -33,8 +33,8 @@ func (c *ServerCommand) Help() string {
 }
 
 func (c *ServerCommand) doRun(errc chan<- error) {
-	log.Println("Listening on :3002")
-	errc <- http.ListenAndServe(":3002", c.r.Container())
+	log.Println("Listening on :3005")
+	errc <- http.ListenAndServe(":3005", c.r.Container())
 }
 
 func (c *ServerCommand) Run(_ []string) int {
