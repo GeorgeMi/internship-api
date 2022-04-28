@@ -6,13 +6,19 @@ import (
 	"github.com/emicklei/go-restful/v3"
 )
 
+const (
+	BlackListParameter = "BlackListValue"
+)
+
 type Service struct {
 	container *restful.Container
+	blackList []int
 }
 
 func NewService() (*Service, error) {
 	r := &Service{
 		container: restful.NewContainer(),
+		blackList: make([]int, 0),
 	}
 
 	r.container.Add(r.buildRoutes())
