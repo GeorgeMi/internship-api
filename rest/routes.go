@@ -21,6 +21,7 @@ func NewService() (*Service, error) {
 		blackList: make([]int, 0),
 	}
 
+	r.blackList = append(r.blackList, 2, 3)
 	r.container.Add(r.buildRoutes())
 
 	return r, nil
@@ -49,5 +50,12 @@ func (r *Service) buildRoutes() *restful.WebService {
 		To(r.GetFibonacciRequest).
 		Writes(map[string]string{}))
 
+	ws.Route(ws.DELETE("/blackList/{"+BlackListParameter+"}").
+		Param(restful.QueryParameter("number", "valoare").DataType("int").Required(true)).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), GetFibonacciResponse{}).
+		Returns(http.StatusBadRequest, http.StatusText(http.StatusBadRequest), EndpointErrorResponse{}).
+		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), EndpointErrorResponse{}).
+		To(r.DeleteNumberRequest).
+		Writes(map[string]string{}))
 	return ws
 }
