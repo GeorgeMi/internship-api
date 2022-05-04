@@ -16,6 +16,14 @@ type DeleteNumberResponse struct {
 	Response []int `json:"response"`
 }
 
+type GetBlacklistRequest struct {
+	Val *int
+}
+
+type GetBlacklistResponse struct {
+	Response []int `json:"response"`
+}
+
 func (r *Service) DeleteNumberRequest(request *restful.Request, response *restful.Response) {
 	var responseJson DeleteNumberResponse
 
@@ -47,8 +55,31 @@ func (r *Service) DeleteNumberRequest(request *restful.Request, response *restfu
 		}
 	}
 
-	//fmt.Println(response.WriteAsJson(responseJson)) <-----1
 	response.WriteAsJson(responseJson)
+}
+
+func readAddBlacklistRequest(request *restful.Request) (requestQuery GetBlacklistRequest, err error) {
+
+	requestQuery.Val = new(int)
+	request.PathParameter("BlacklistParameter")
+
+	if len(request.PathParameter("BacklistParameter")) > 0 {
+		*requestQuery.Val, err = strconv.Atoi(request.PathParameter("BlacklistParameter"))
+	}
+	return
+}
+
+func (r *Service) AddBlacklistElement(request *restful.Request, response *restful.Response) {
+
+	requestQuery, err := readAddBlacklistRequest(request)
+	if err != nil {
+		buildEndPointErrorResponse(response, http.StatusBadRequest, fmt.Sprintf("error:%s", err))
+		return
+	}
+
+	r.blackList = append(r.blackList, *requestQuery.Val)
+	return
+
 }
 
 func readDeleteNumberRequest(request *restful.Request) (requestQuery DeleteNumberRequest, err error) {
@@ -60,6 +91,16 @@ func readDeleteNumberRequest(request *restful.Request) (requestQuery DeleteNumbe
 	}
 
 	return
+}
+
+func duplicateInBlacklist(arr []int, el int) bool {
+	for i := 0; i < len(arr); i++ {
+		if arr[i] == el {
+			return true
+		}
+	}
+
+	return false
 }
 
 func validateDeleteNumberRequest(requestQuery DeleteNumberRequest) error {
@@ -76,8 +117,20 @@ func validateDeleteNumberRequest(requestQuery DeleteNumberRequest) error {
 	return nil
 }
 
-func printBlackList(list []int) {
+func (r *Service) validateGetBlacklistRequest(requestQuery GetBlacklistRequest) error {
+	if requestQuery.Val == nil {
 
-	fmt.Println(list[:])
+		return fmt.Errorf("Invalid Number: %v", *requestQuery.Val)
+	}
 
+	if *requestQuery.Val < 0 {
+
+		return fmt.Errorf("Invalid Number: %v", requestQuery.Val)
+	}
+
+	if duplicateInBlacklist(r.blackList, *requestQuery.Val) == true {
+		return fmt.Errorf("%v already exists!", requestQuery.Val)
+	}
+
+	return nil
 }

@@ -50,16 +50,16 @@ func (r *Service) buildRoutes() *restful.WebService {
 		To(r.GetFibonacciRequest).
 		Writes(map[string]string{}))
 
-	ws.Route(ws.DELETE("/blackList/{"+BlackListParameter+"}").
-		Param(restful.QueryParameter("number", "valoare").DataType("int").Required(true)).
-		Returns(http.StatusOK, http.StatusText(http.StatusOK), GetFibonacciResponse{}).
+	ws.Route(ws.PUT("/blackList/{"+BlackListParameter+"}").
+		Param(restful.QueryParameter("val", "numar").DataType("int").Required(true)).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), GetBlacklistResponse{}).
 		Returns(http.StatusBadRequest, http.StatusText(http.StatusBadRequest), EndpointErrorResponse{}).
 		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), EndpointErrorResponse{}).
-		To(r.DeleteNumberRequest).
+		To(r.AddBlacklistElement).
 		Writes(map[string]string{}))
 
-	ws.Route(ws.GET("/blackList/{"+BlackListParameter+"}").
-		//Param(restful.QueryParameter("number", "valoare").DataType("int").Required(true)).
+	ws.Route(ws.DELETE("/blackList/{"+BlackListParameter+"}").
+		Param(restful.QueryParameter("number", "valoare").DataType("int").Required(true)).
 		Returns(http.StatusOK, http.StatusText(http.StatusOK), GetFibonacciResponse{}).
 		Returns(http.StatusBadRequest, http.StatusText(http.StatusBadRequest), EndpointErrorResponse{}).
 		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), EndpointErrorResponse{}).
