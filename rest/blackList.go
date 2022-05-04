@@ -24,6 +24,10 @@ type GetBlacklistResponse struct {
 	Response []int `json:"response"`
 }
 
+type getBlacklistElements struct {
+	Response []int `json:"response"`
+}
+
 func (r *Service) DeleteNumberRequest(request *restful.Request, response *restful.Response) {
 	var responseJson DeleteNumberResponse
 
@@ -89,6 +93,16 @@ func readDeleteNumberRequest(request *restful.Request) (requestQuery DeleteNumbe
 	if len(request.PathParameter(BlackListParameter)) > 0 {
 		*requestQuery.Number, err = strconv.Atoi(request.PathParameter(BlackListParameter))
 	}
+
+	return
+}
+
+func (r *Service) printBlacklist(request *restful.Request, response *restful.Response) {
+	var responseJson getBlacklistElements
+
+	responseJson.Response = r.blackList[:]
+
+	response.WriteAsJson(responseJson)
 
 	return
 }

@@ -66,5 +66,12 @@ func (r *Service) buildRoutes() *restful.WebService {
 		To(r.DeleteNumberRequest).
 		Writes(map[string]string{}))
 
+	ws.Route(ws.GET("/blackList").
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), GetFibonacciResponse{}).
+		Returns(http.StatusBadRequest, http.StatusText(http.StatusBadRequest), EndpointErrorResponse{}).
+		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), EndpointErrorResponse{}).
+		To(r.printBlacklist).
+		Writes(map[string]string{}))
+
 	return ws
 }
