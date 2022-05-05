@@ -21,7 +21,6 @@ func NewService() (*Service, error) {
 		blackList: make([]int, 0),
 	}
 
-	r.blackList = append(r.blackList, 2, 3)
 	r.container.Add(r.buildRoutes())
 
 	return r, nil
