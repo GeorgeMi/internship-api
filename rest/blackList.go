@@ -37,10 +37,9 @@ type getBlacklistElements struct {
 func readAddBlacklistRequest(request *restful.Request) (requestQuery GetBlacklistRequest, err error) {
 
 	requestQuery.Val = new(int)
-	request.PathParameter("BlacklistParameter")
 
-	if len(request.PathParameter("BacklistParameter")) > 0 {
-		*requestQuery.Val, err = strconv.Atoi(request.PathParameter("BlacklistParameter"))
+	if len(request.PathParameter(BlackListParameter)) > 0 {
+		*requestQuery.Val, err = strconv.Atoi(request.PathParameter(BlackListParameter))
 	}
 	return
 }
@@ -76,7 +75,6 @@ func readDeleteNumberRequest(request *restful.Request) (requestQuery DeleteNumbe
 }
 
 func (r *Service) DeleteNumberRequest(request *restful.Request, response *restful.Response) {
-	var responseJson DeleteNumberResponse
 
 	requestQuery, err := readDeleteNumberRequest(request)
 	if err != nil {
@@ -93,20 +91,21 @@ func (r *Service) DeleteNumberRequest(request *restful.Request, response *restfu
 
 		return
 	}
+	r.blackList = removeFromArray(*requestQuery.Number, r.blackList)
 
-	for i, w := range r.blackList {
-		if *requestQuery.Number == w {
+}
+
+func removeFromArray(val int, array []int) []int {
+	for i, w := range array {
+		if val == w {
 			//r.blackList = append(r.blackList[:i], r.blackList[i+1:])
-			responseJson.Response = append(r.blackList[:i], r.blackList[i+1:]...)
+			//responseJson.Response = append(r.blackList[:i], r.blackList[i+1:]...)
+			array[i] = array[len(array)-1]
+			return array[:len(array)-1] // asa se sterge o valoare din array
 
-		} else {
-			buildEndPointErrorResponse(response, http.StatusBadRequest, fmt.Sprintf("number doesn't exist in array"))
-
-			return
 		}
 	}
-
-	response.WriteAsJson(responseJson)
+	return array
 }
 
 /*
