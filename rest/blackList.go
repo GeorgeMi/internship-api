@@ -58,16 +58,6 @@ func (r *Service) AddBlacklistElement(request *restful.Request, response *restfu
 
 }
 
-func (r *Service) printBlacklist(request *restful.Request, response *restful.Response) {
-	var responseJson getBlacklistElements
-
-	responseJson.Response = r.blackList[:]
-
-	response.WriteAsJson(responseJson)
-
-	return
-}
-
 /*
 ######################################################################################################
 ######################################  DELETE FROM BLACKLIST  #######################################
@@ -121,9 +111,19 @@ func (r *Service) DeleteNumberRequest(request *restful.Request, response *restfu
 
 /*
 ######################################################################################################
-###########################################  VALIDATION  #############################################
+########################################  PRINT BLACKLIST  ###########################################
 ######################################################################################################
 */
+
+func (r *Service) printBlacklist(request *restful.Request, response *restful.Response) {
+	var responseJson getBlacklistElements
+
+	responseJson.Response = r.blackList[:]
+
+	response.WriteAsJson(responseJson)
+
+	return
+}
 
 func validateDeleteNumberRequest(requestQuery DeleteNumberRequest) error {
 	if requestQuery.Number == nil {
