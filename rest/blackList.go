@@ -52,6 +52,12 @@ func (r *Service) AddBlacklistElement(request *restful.Request, response *restfu
 		return
 	}
 
+	err = r.validateGetBlacklistRequest(requestQuery)
+	if err != nil {
+		buildEndPointErrorResponse(response, http.StatusBadRequest, fmt.Sprintf("error:%s", err))
+		return
+	}
+
 	r.blackList = append(r.blackList, *requestQuery.Val)
 	return
 
@@ -91,8 +97,24 @@ func (r *Service) DeleteNumberRequest(request *restful.Request, response *restfu
 
 		return
 	}
-	r.blackList = removeFromArray(*requestQuery.Number, r.blackList)
 
+	a := len(r.blackList)
+	r.blackList = removeFromArray(*requestQuery.Number, r.blackList)
+	b := len(r.blackList)
+
+	err = numberDosentExistDeleteNumber(a, b)
+	if err != nil {
+		buildEndPointErrorResponse(response, http.StatusBadRequest, fmt.Sprintf("error:%s", err))
+	}
+
+}
+func numberDosentExistDeleteNumber(a int, b int) error {
+	if a == b {
+
+		return fmt.Errorf("number doesn't exist")
+	}
+
+	return nil
 }
 
 func removeFromArray(val int, array []int) []int {
@@ -146,11 +168,11 @@ func (r *Service) validateGetBlacklistRequest(requestQuery GetBlacklistRequest) 
 
 	if *requestQuery.Val < 0 {
 
-		return fmt.Errorf("invalid number: %v", requestQuery.Val)
+		return fmt.Errorf("invalid number: %v", *requestQuery.Val)
 	}
 
 	if duplicateInBlacklist(r.blackList, *requestQuery.Val) {
-		return fmt.Errorf("%v already exists!", requestQuery.Val)
+		return fmt.Errorf("%v already exists!", *requestQuery.Val)
 	}
 
 	return nil
