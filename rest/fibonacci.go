@@ -56,7 +56,7 @@ func (r *Service) GetFibonacciRequest(request *restful.Request, response *restfu
 		return
 	}
 
-	s := make([]int, 0)
+	s := make([]int, 0) // uint64 poti pune cea mai mare valoare de timp int pozitiv
 	s = r.checkListAndAppend(s, 0)
 	s = r.checkListAndAppend(s, 1)
 	x := 0
@@ -97,11 +97,11 @@ func validateGetFibonacciRequest(requestQuery GetFibonacciRequest) error {
 
 	if *requestQuery.Index < 0 {
 
-		return fmt.Errorf("invalid index: %v", requestQuery.Index)
+		return fmt.Errorf("invalid index: %v", *requestQuery.Index)
 	}
 	if requestQuery.Size <= 0 {
 
-		return fmt.Errorf("invalid iize: %v", requestQuery.Size)
+		return fmt.Errorf("invalid ißize: %v", requestQuery.Size)
 	}
 
 	return nil //fmt.Errorf("Index invalid")
