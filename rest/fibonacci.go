@@ -17,6 +17,24 @@ type GetFibonacciResponse struct {
 	Response []int `json:"response"`
 }
 
+func next_fibonacci(a, b *int) (response int) {
+	response = *a + *b
+	*a = *b
+	*b = response
+
+	return
+}
+
+func (r *Service) checkListAndAppend(list []int, val int) []int {
+	for _, value := range r.blackList {
+		if val == value {
+			return list
+		}
+	}
+	list = append(list, val)
+	return list
+}
+
 func (r *Service) GetFibonacciRequest(request *restful.Request, response *restful.Response) {
 	var responseJson GetFibonacciResponse
 	//responseJson.Response = []int{1, 3, 5}
@@ -38,17 +56,14 @@ func (r *Service) GetFibonacciRequest(request *restful.Request, response *restfu
 		return
 	}
 
-	s := make([]int, 0)
-	s = append(s, 0, 1)
+	s := make([]int, 0) // uint64 poti pune cea mai mare valoare de timp int pozitiv
+	s = r.checkListAndAppend(s, 0)
+	s = r.checkListAndAppend(s, 1)
 	x := 0
 	y := 1
-	z := 0
 
 	for len(s) < *requestQuery.Index+requestQuery.Size {
-		z = x + y
-		x = y
-		y = z
-		s = append(s, z)
+		s = r.checkListAndAppend(s, next_fibonacci(&x, &y))
 	}
 
 	responseJson.Response = s[*requestQuery.Index : *requestQuery.Index+requestQuery.Size]
@@ -77,16 +92,16 @@ func readGetFibonacciRequest(request *restful.Request) (requestQuery GetFibonacc
 func validateGetFibonacciRequest(requestQuery GetFibonacciRequest) error {
 	if requestQuery.Index == nil {
 
-		return fmt.Errorf("Invalid Index: %v", *requestQuery.Index)
+		return fmt.Errorf("invalid index: %v", *requestQuery.Index)
 	}
 
 	if *requestQuery.Index < 0 {
 
-		return fmt.Errorf("Invalid Index: %v", requestQuery.Index)
+		return fmt.Errorf("invalid index: %v", *requestQuery.Index)
 	}
 	if requestQuery.Size <= 0 {
 
-		return fmt.Errorf("Invalid Size: %v", requestQuery.Size)
+		return fmt.Errorf("invalid ißize: %v", requestQuery.Size)
 	}
 
 	return nil //fmt.Errorf("Index invalid")
