@@ -25,6 +25,16 @@ func Next_fibonacci(a, b *int) (response int) {
 	return
 }
 
+func CheckListAndAppendClone(list []int, val int, dummiedatas []int) []int {
+	for _, value := range dummiedatas {
+		if val == value {
+			return list
+		}
+	}
+	list = append(list, val)
+	return list
+}
+
 func (r *Service) CheckListAndAppend(list []int, val int) []int {
 	for _, value := range r.blackList {
 		if val == value {
