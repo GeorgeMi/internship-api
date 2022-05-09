@@ -17,7 +17,7 @@ type GetFibonacciResponse struct {
 	Response []int `json:"response"`
 }
 
-func next_fibonacci(a, b *int) (response int) {
+func Next_fibonacci(a, b *int) (response int) {
 	response = *a + *b
 	*a = *b
 	*b = response
@@ -25,7 +25,7 @@ func next_fibonacci(a, b *int) (response int) {
 	return
 }
 
-func (r *Service) checkListAndAppend(list []int, val int) []int {
+func (r *Service) CheckListAndAppend(list []int, val int) []int {
 	for _, value := range r.blackList {
 		if val == value {
 			return list
@@ -57,13 +57,13 @@ func (r *Service) GetFibonacciRequest(request *restful.Request, response *restfu
 	}
 
 	s := make([]int, 0) // uint64 poti pune cea mai mare valoare de timp int pozitiv
-	s = r.checkListAndAppend(s, 0)
-	s = r.checkListAndAppend(s, 1)
+	s = r.CheckListAndAppend(s, 0)
+	s = r.CheckListAndAppend(s, 1)
 	x := 0
 	y := 1
 
 	for len(s) < *requestQuery.Index+requestQuery.Size {
-		s = r.checkListAndAppend(s, next_fibonacci(&x, &y))
+		s = r.CheckListAndAppend(s, Next_fibonacci(&x, &y))
 	}
 
 	responseJson.Response = s[*requestQuery.Index : *requestQuery.Index+requestQuery.Size]
