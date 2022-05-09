@@ -23,6 +23,10 @@ func NewService() (*Service, error) {
 
 	r.container.Add(r.buildRoutes())
 
+	if err := bootstrapSwagger(r.container); err != nil {
+		return nil, err
+	}
+
 	return r, nil
 }
 
