@@ -14,23 +14,24 @@ func TestNextFibonacci(t *testing.T) {
 	}
 }
 
-/*type checkTest struct {
-	arg1, arg2, expected int
+type checkTest struct {
+	arg1     []int
+	arg2     int
+	expected []int
 }
 
 var checkTests = []checkTest{
-	checkTest{2, 3, 5},
+	checkTest{[]int{1, 2}, 3, 5},
 	checkTest{4, 8, 12},
 	checkTest{6, 9, 15},
 	checkTest{3, 10, 13},
 }
 
-func TestCheckListAndAppend(t *testing.T) {
-
+func TestCheckListAndAppend() (t *testing.T) {
+	blacklist := []int{2, 5, 8}
 	for _, value := range checkTests {
-		if output := CheckListAndAppend(value.arg1, value.arg2); output != value.expected {
+		if output := CheckListAndAppendClone(value.arg1, value.arg2, blacklist); output != value.expected {
 			t.Errorf("Output %q not equal to expected %q", output, value.expected)
 		}
 	}
 }
-*/
